@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>강릉, 이틀</title>
+<meta name="description" content="9월 19일부터 20일까지, 강릉에서 보내는 이틀">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
+<style>
+  :root{
+    --night:#0B1C2C;
+    --night-deep:#071320;
+    --sea:#1E5C6B;
+    --sea-light:#2F7E8C;
+    --sand:#EDE0C8;
+    --sand-dim:#A9A08E;
+    --lantern:#F0A95C;
+    --level:0%;
+    --ease:cubic-bezier(.4,.1,.2,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--night);
+    color:var(--sand);
+    font-family:"IBM Plex Sans KR",system-ui,sans-serif;
+    font-weight:300;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- 수평선 ---------- */
+  .horizon{
+    position:relative;
+    height:62svh;
+    min-height:380px;
+    overflow:hidden;
+    background:linear-gradient(180deg,#071320 0%,#0E2438 45%,#16394E 100%);
+  }
+  .horizon__sea{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:var(--level);
+    background:linear-gradient(180deg,var(--sea-light),var(--sea) 60%,#134350);
+    transition:height 1.1s var(--ease);
+  }
+  .horizon__sea::before{
+    content:"";
+    position:absolute;
+    top:-10px; left:-50%;
+    width:200%; height:20px;
+    background:radial-gradient(ellipse 50% 100% at 50% 100%,rgba(47,126,140,.9),transparent 70%);
+    animation:drift 9s linear infinite;
+  }
+  @keyframes drift{from{transform:translateX(0)}to{transform:translateX(25%)}}
+
+  .horizon__inner{
+    position:relative;
+    height:100%;
+    max-width:56rem;
+    margin:0 auto;
+    padding:clamp(1.5rem,5vw,3rem);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .kicker{
+    font-size:.82rem;
+    letter-spacing:.14em;
+    color:var(--sand-dim);
+  }
+  h1{
+    font-family:"Gowun Batang",serif;
+    font-weight:700;
+    font-size:clamp(3rem,13vw,6.5rem);
+    line-height:1;
+    letter-spacing:-.02em;
+    margin-top:.4em;
+  }
+  h1 span{display:block}
+  .horizon__foot{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:1rem;
+  }
+  .dday{
+    font-family:"Gowun Batang",serif;
+    font-size:clamp(1.1rem,4vw,1.5rem);
+  }
+  .dday b{color:var(--lantern);font-weight:700}
+  .progress{
+    text-align:right;
+    font-size:.9rem;
+    color:var(--sand-dim);
+  }
+  .progress b{
+    display:block;
+    font-family:"Gowun Batang",serif;
+    font-size:1.5rem;
+    color:var(--sand);
+    font-weight:400;
+  }
+
+  /* ---------- 스크롤 중에도 붙어있는 얇은 조수 바 ---------- */
+  .tide{
+    position:sticky;
+    top:0;
+    z-index:20;
+    display:flex;
+    align-items:center;
+    gap:.85rem;
+    padding:.65rem clamp(1.5rem,5vw,3rem);
+    background:rgba(7,19,32,.86);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    border-bottom:1px solid rgba(237,224,200,.1);
+  }
+  .tide__track{
+    flex:1;
+    height:4px;
+    border-radius:2px;
+    background:rgba(237,224,200,.15);
+    overflow:hidden;
+  }
+  .tide__fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--sea-light),var(--lantern));
+    transition:width .45s var(--ease);
+  }
+  .tide__count{
+    font-family:"Gowun Batang",serif;
+    font-size:.82rem;
+    color:var(--sand-dim);
+    white-space:nowrap;
+  }
+
+  /* ---------- 본문 ---------- */
+  main{
+    max-width:56rem;
+    margin:0 auto;
+    padding:clamp(2.5rem,7vw,4.5rem) clamp(1.5rem,5vw,3rem) 5rem;
+  }
+  .hint{
+    color:var(--sand-dim);
+    font-size:.95rem;
+    padding-bottom:2.5rem;
+    border-bottom:1px solid rgba(237,224,200,.14);
+  }
+
+  .day{margin-top:3.2rem}
+  .day__head{
+    display:flex;
+    align-items:baseline;
+    gap:.9rem;
+    margin-bottom:1.4rem;
+  }
+  .day__head h2{
+    font-family:"Gowun Batang",serif;
+    font-size:1.8rem;
+    font-weight:700;
+  }
+  .day__head p{color:var(--sand-dim);font-size:.9rem}
+
+  ol{list-style:none}
+  .stop{
+    position:relative;
+    padding-left:2.6rem;
+  }
+  .stop::before{
+    content:"";
+    position:absolute;
+    left:.56rem; top:0; bottom:0;
+    width:1px;
+    background:rgba(237,224,200,.18);
+  }
+  .stop:first-child::before{top:1.7rem}
+  .stop:last-child::before{bottom:auto;height:1.7rem}
+
+  .stop__btn{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:none;
+    border:0;
+    border-radius:.6rem;
+    color:inherit;
+    font:inherit;
+    padding:.85rem .9rem .3rem 0;
+    cursor:pointer;
+  }
+  .stop__btn:focus-visible{
+    outline:2px solid var(--lantern);
+    outline-offset:4px;
+  }
+  .lamp{
+    position:absolute;
+    left:0; top:1.25rem;
+    width:1.15rem; height:1.15rem;
+    border-radius:50%;
+    border:1px solid rgba(237,224,200,.45);
+    background:var(--night);
+    transition:background .45s var(--ease),box-shadow .45s var(--ease),border-color .45s var(--ease);
+  }
+  .stop.done .lamp{
+    background:var(--lantern);
+    border-color:var(--lantern);
+    box-shadow:0 0 0 5px rgba(240,169,92,.16),0 0 22px rgba(240,169,92,.5);
+  }
+  .stop__time{
+    font-family:"Gowun Batang",serif;
+    font-size:1.05rem;
+    color:var(--lantern);
+    margin-right:.7rem;
+  }
+  .stop__name{font-size:1.18rem;font-weight:500}
+  .stop__note{
+    color:var(--sand-dim);
+    font-size:.92rem;
+    margin-top:.15rem;
+  }
+  .stop.done .stop__name,
+  .stop.done .stop__time{opacity:.45}
+  .stop.done .stop__name{text-decoration:line-through;text-decoration-thickness:1px}
+  .stop.done .stop__note{opacity:.4}
+
+  .now{
+    display:inline-block;
+    margin-left:.5rem;
+    font-size:.72rem;
+    color:var(--night);
+    background:var(--lantern);
+    border-radius:1rem;
+    padding:.05rem .55rem;
+    vertical-align:middle;
+  }
+  .map{
+    display:inline-block;
+    margin-top:.35rem;
+    margin-left:2.6rem;
+    font-size:.85rem;
+    color:var(--sea-light);
+    text-decoration:none;
+    border-bottom:1px solid rgba(47,126,140,.5);
+  }
+  .map:hover,.map:focus-visible{color:var(--sand);border-color:var(--sand)}
+
+  /* ---------- 하트 · 메모 ---------- */
+  .extra{
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    padding:.5rem 0 .9rem 2.6rem;
+  }
+  .iconbtn{
+    background:none;
+    border:0;
+    cursor:pointer;
+    font:inherit;
+    font-size:.85rem;
+    color:var(--sand-dim);
+    display:inline-flex;
+    align-items:center;
+    gap:.35rem;
+    padding:.15rem .2rem;
+  }
+  .iconbtn:hover,.iconbtn:focus-visible{color:var(--sand)}
+  .heart{font-size:.95rem}
+  .heart.liked{color:var(--lantern)}
+  .heart.liked .heartIcon{color:#E5484D}
+  .heart.pop{animation:heartpop .4s var(--ease)}
+  @keyframes heartpop{0%{transform:scale(1)}50%{transform:scale(1.4)}100%{transform:scale(1)}}
+
+  .memoBox{padding:0 0 .8rem 2.6rem}
+  .memoInput{
+    display:block;
+    width:100%;
+    min-height:2.6rem;
+    resize:vertical;
+    background:rgba(237,224,200,.06);
+    border:1px solid rgba(237,224,200,.18);
+    border-radius:.5rem;
+    color:var(--sand);
+    font:inherit;
+    font-size:.9rem;
+    padding:.5rem .65rem;
+  }
+  .memoInput::placeholder{color:rgba(169,160,142,.55)}
+  .memoInput:focus-visible{outline:2px solid var(--lantern);outline-offset:2px}
+
+  .closing{
+    margin-top:4.5rem;
+    padding-top:2.5rem;
+    border-top:1px solid rgba(237,224,200,.14);
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:1.5rem;
+  }
+  .closing p{
+    font-family:"Gowun Batang",serif;
+    font-size:1.25rem;
+    max-width:24rem;
+  }
+  .reset{
+    background:none;
+    border:1px solid rgba(237,224,200,.3);
+    color:var(--sand-dim);
+    font:inherit;
+    font-size:.85rem;
+    border-radius:2rem;
+    padding:.45rem 1.1rem;
+    cursor:pointer;
+  }
+  .reset:hover,.reset:focus-visible{color:var(--sand);border-color:var(--sand)}
+
+  /* ---------- 다녀온 뒤 ---------- */
+  .overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(7,19,32,.86);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:1.5rem;
+    z-index:100;
+  }
+  .overlay[hidden]{display:none}
+  .overlay__card{
+    background:var(--night-deep);
+    border:1px solid rgba(237,224,200,.18);
+    border-radius:1rem;
+    padding:2.4rem 2rem;
+    max-width:24rem;
+    text-align:center;
+  }
+  .overlay__card p{
+    font-family:"Gowun Batang",serif;
+    font-size:1.35rem;
+    line-height:1.65;
+    margin-bottom:1.6rem;
+  }
+  .overlay__close{
+    background:var(--lantern);
+    color:var(--night);
+    border:0;
+    border-radius:2rem;
+    padding:.55rem 1.5rem;
+    font:inherit;
+    font-weight:600;
+    cursor:pointer;
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<header class="horizon">
+  <div class="horizon__sea" id="sea"></div>
+  <div class="horizon__inner">
+    <div>
+      <p class="kicker">2026.09.19 — 09.20</p>
+      <h1><span>강릉,</span><span>이틀</span></h1>
+    </div>
+    <div class="horizon__foot">
+      <p class="dday" id="dday">—</p>
+      <p class="progress"><b id="count">0 / 9</b>다녀온 곳</p>
+    </div>
+  </div>
+</header>
+
+<div class="tide" id="tide">
+  <div class="tide__track"><div class="tide__fill" id="tideFill"></div></div>
+  <span class="tide__count" id="tideCount">0 / 9</span>
+</div>
+
+<main>
+  <p class="hint">일정을 누르면 불이 켜지고 바다가 그만큼 차올라요.</p>
+
+  <section class="day">
+    <div class="day__head">
+      <h2>첫째 날</h2>
+      <p>9월 19일 토요일</p>
+    </div>
+    <ol id="day1"></ol>
+  </section>
+
+  <section class="day">
+    <div class="day__head">
+      <h2>둘째 날</h2>
+      <p>9월 20일 일요일</p>
+    </div>
+    <ol id="day2"></ol>
+  </section>
+
+  <div class="closing">
+    <p>100일 기념 강릉여행 재밌게 다녀오자.</p>
+    <button class="reset" id="reset">기록 지우기</button>
+  </div>
+</main>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="overlay__card">
+    <p>다녀왔네요.<br>두 사람의 100일, 여기 다 담겨있어요.</p>
+    <button class="overlay__close" id="overlayClose">닫기</button>
+  </div>
+</div>
+
+<script>
+const PLAN = [
+  { day:1, at:"2026-09-19T11:00:00+09:00", time:"11:00 AM", name:"야탑에서 출발", note:"강릉으로" },
+  { day:1, at:"2026-09-19T13:30:00+09:00", time:"1:30 PM", name:"회산장칼국수", note:"홍제동 · 도착하자마자 뜨끈한 장칼국수", map:"회산장칼국수" },
+  { day:1, at:"2026-09-19T15:00:00+09:00", time:"3:00 PM", name:"세인트존스호텔 체크인", note:"강문동 · 짐 풀고 한숨 돌리기", map:"세인트존스호텔" },
+  { day:1, at:"2026-09-19T15:30:00+09:00", time:"3:30 PM", name:"5to7 경포점", note:"파라솔 빌려서 해변에 앉아 있기", map:"5to7 경포점" },
+  { day:1, at:"2026-09-19T18:00:00+09:00", time:"6:00 PM", name:"럭키회센타", note:"교동 · 저녁에 먹을 회 포장", map:"럭키회센타" },
+  { day:1, at:"2026-09-19T18:30:00+09:00", time:"6:30 PM", name:"강릉야시장", note:"월화거리 · 금·토 저녁 6시부터 11시까지", map:"강릉 월화거리 야시장" },
+  { day:1, at:"2026-09-19T20:00:00+09:00", time:"8:00 PM", name:"숙소로", note:"회에 술 한잔, 그리고 아무것도 안 하기", map:"세인트존스호텔" },
+  { day:1, at:"2026-09-19T22:00:00+09:00", time:"10:00 PM", name:"불꽃놀이", note:"숙소 앞 바다에서" },
+  { day:2, at:"2026-09-20T10:30:00+09:00", time:"10:30 AM", name:"체크아웃", note:"마지막으로 바다 한 번 보고" },
+  { day:2, at:"2026-09-20T11:00:00+09:00", time:"11:00 AM", name:"대동면옥 강릉본점", note:"교동 · 아점으로 막국수", map:"대동면옥 강릉본점" },
+  { day:2, at:"2026-09-20T13:00:00+09:00", time:"1:00 PM", name:"집으로 출발", note:"" }
+];
+
+const KEY = "gangneung-2026-09";
+const LIKES_KEY = KEY + "-likes";
+const NOTES_KEY = KEY + "-notes";
+const CELEB_KEY = KEY + "-celebrated";
+
+let done = [];
+try { done = JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { done = []; }
+let likes = [];
+try { likes = JSON.parse(localStorage.getItem(LIKES_KEY)) || []; } catch (e) { likes = []; }
+let notes = {};
+try { notes = JSON.parse(localStorage.getItem(NOTES_KEY)) || {}; } catch (e) { notes = {}; }
+
+const els = [];
+
+function render(){
+  PLAN.forEach((s, i) => {
+    const li = document.createElement("li");
+    li.className = "stop";
+
+    const btn = document.createElement("button");
+    btn.className = "stop__btn";
+    btn.type = "button";
+    btn.innerHTML =
+      '<span class="lamp"></span>' +
+      '<span class="stop__time">' + s.time + '</span>' +
+      '<span class="stop__name">' + s.name + '</span>' +
+      (s.note ? '<span class="stop__note">' + s.note + '</span>' : '');
+    btn.addEventListener("click", () => toggle(i));
+    li.appendChild(btn);
+
+    if (s.map) {
+      const a = document.createElement("a");
+      a.className = "map";
+      a.href = "https://map.naver.com/p/search/" + encodeURIComponent(s.map);
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = "지도에서 보기";
+      li.appendChild(a);
+    }
+
+    const extra = document.createElement("div");
+    extra.className = "extra";
+
+    const heart = document.createElement("button");
+    heart.type = "button";
+    heart.className = "iconbtn heart" + (likes.indexOf(i) > -1 ? " liked" : "");
+    heart.innerHTML = "<span class=\"heartIcon\">♥</span> 좋았어요";
+    heart.addEventListener("click", () => {
+      const at = likes.indexOf(i);
+      if (at > -1) likes.splice(at, 1); else likes.push(i);
+      try { localStorage.setItem(LIKES_KEY, JSON.stringify(likes)); } catch (e) {}
+      heart.classList.toggle("liked");
+      heart.classList.add("pop");
+      setTimeout(() => heart.classList.remove("pop"), 400);
+    });
+    extra.appendChild(heart);
+
+    const memoToggle = document.createElement("button");
+    memoToggle.type = "button";
+    memoToggle.className = "iconbtn";
+    memoToggle.textContent = "메모 남기기";
+    extra.appendChild(memoToggle);
+
+    li.appendChild(extra);
+
+    const memoBox = document.createElement("div");
+    memoBox.className = "memoBox";
+    memoBox.hidden = !notes[i];
+    const memoInput = document.createElement("textarea");
+    memoInput.className = "memoInput";
+    memoInput.placeholder = "여기서 있었던 일, 한마디...";
+    memoInput.value = notes[i] || "";
+    let memoTimer;
+    memoInput.addEventListener("input", () => {
+      clearTimeout(memoTimer);
+      memoTimer = setTimeout(() => {
+        notes[i] = memoInput.value;
+        try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); } catch (e) {}
+      }, 400);
+    });
+    memoBox.appendChild(memoInput);
+    li.appendChild(memoBox);
+
+    memoToggle.addEventListener("click", () => {
+      memoBox.hidden = !memoBox.hidden;
+      if (!memoBox.hidden) memoInput.focus();
+    });
+
+    document.getElementById("day" + s.day).appendChild(li);
+    els.push(li);
+  });
+  paint();
+}
+
+function toggle(i){
+  const at = done.indexOf(i);
+  if (at > -1) done.splice(at, 1); else done.push(i);
+  try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {}
+  paint();
+}
+
+function paint(){
+  els.forEach((li, i) => {
+    const on = done.indexOf(i) > -1;
+    li.classList.toggle("done", on);
+    li.querySelector(".stop__btn").setAttribute("aria-pressed", on);
+  });
+  const n = done.length;
+  document.getElementById("count").textContent = n + " / " + PLAN.length;
+  const pct = Math.round((n / PLAN.length) * 100);
+  document.documentElement.style.setProperty("--level", (pct * 0.62) + "%");
+  document.getElementById("tideCount").textContent = n + " / " + PLAN.length;
+  document.getElementById("tideFill").style.width = pct + "%";
+  maybeCelebrate(n);
+}
+
+function maybeCelebrate(n){
+  if (n !== PLAN.length) return;
+  let already = false;
+  try { already = localStorage.getItem(CELEB_KEY) === "1"; } catch (e) {}
+  if (already) return;
+  document.getElementById("overlay").hidden = false;
+  try { localStorage.setItem(CELEB_KEY, "1"); } catch (e) {}
+}
+
+document.getElementById("overlayClose").addEventListener("click", () => {
+  document.getElementById("overlay").hidden = true;
+});
+
+function markNow(){
+  document.querySelectorAll(".now").forEach(e => e.remove());
+  const now = Date.now();
+  let idx = -1;
+  PLAN.forEach((s, i) => { if (new Date(s.at).getTime() <= now) idx = i; });
+  if (idx < 0) return;
+  if (now - new Date(PLAN[idx].at).getTime() > 1000 * 60 * 60 * 6) return;
+  const tag = document.createElement("span");
+  tag.className = "now";
+  tag.textContent = "지금";
+  els[idx].querySelector(".stop__name").after(tag);
+}
+
+function countdown(){
+  const start = new Date(PLAN[0].at).getTime();
+  const diff = start - Date.now();
+  const el = document.getElementById("dday");
+  if (diff <= 0) {
+    const end = new Date("2026-09-20T13:00:00+09:00").getTime();
+    el.innerHTML = Date.now() <= end ? "지금, <b>강릉</b>" : "잘 다녀왔어요";
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor(diff / 3600000) % 24;
+  const m = Math.floor(diff / 60000) % 60;
+  el.innerHTML = d > 0
+    ? "<b>" + d + "일</b> " + h + "시간 남았어요"
+    : "<b>" + h + "시간</b> " + m + "분 남았어요";
+}
+
+document.getElementById("reset").addEventListener("click", () => {
+  done = []; likes = []; notes = {};
+  try {
+    localStorage.removeItem(KEY);
+    localStorage.removeItem(LIKES_KEY);
+    localStorage.removeItem(NOTES_KEY);
+    localStorage.removeItem(CELEB_KEY);
+  } catch (e) {}
+  els.forEach((li) => {
+    const h = li.querySelector(".heart");
+    if (h) h.classList.remove("liked");
+    const ta = li.querySelector(".memoInput");
+    if (ta) ta.value = "";
+    const mb = li.querySelector(".memoBox");
+    if (mb) mb.hidden = true;
+  });
+  paint();
+});
+
+render();
+markNow();
+countdown();
+setInterval(countdown, 30000);
+setInterval(markNow, 60000);
+</script>
+</body>
+</html>
